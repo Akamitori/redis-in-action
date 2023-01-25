@@ -29,7 +29,7 @@ public class CleanSessionsThread {
 
 	private void run() {
 		while (!_quit) {
-			var size = _db.SortedSetLength("recent:");
+			var size = _db.ListLength("recent:");
 
 			if (size <= _limit) {
 				try {
@@ -43,7 +43,7 @@ public class CleanSessionsThread {
 
 			var endIndex = Math.Min(size - _limit, 100);
 
-			var tokens = _db.SortedSetRangeByRank("recent:", 0, endIndex - 1);
+			var tokens = _db.ListRightPop("recent:", endIndex);
 
 			var sessionKeys = new List<RedisKey>();
 

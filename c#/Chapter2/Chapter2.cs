@@ -166,12 +166,11 @@ public class Chapter2 {
 	}
 
 	private void updateToken(IDatabase conn, string token, string user, string? item) {
-		var timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 		conn.HashSet("login:", token, user);
-		conn.SortedSetAdd("recent:", token, timestamp);
+		conn.ListLeftPush("recent:", token);
 		if (item != null) {
-			conn.SortedSetAdd("viewed:" + token, item, timestamp);
-			conn.SortedSetRemoveRangeByRank("viewed:" + token, 0, -26);
+			conn.ListLeftPush("viewed:" + token, item);
+			conn.ListTrim("viewed:" + token,0,-26);
 			conn.SortedSetIncrement("viewed:", item, -1);
 		}
 	}
