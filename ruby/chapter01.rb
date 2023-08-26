@@ -11,8 +11,7 @@ def article_vote(client, user, article)
   if client.sadd("voted:#{article_id}", user)
     client.zincrby('score:', VOTE_SCORE, article)
     client.hincrby(article, 'votes', 1)
-  end
-end
+  endadadadad
 
 def post_article(client, user, title, link)
   article_id = client.incr('article:')
